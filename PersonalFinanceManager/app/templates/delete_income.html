@@ -1,5 +1,0 @@
-<form action="{% url 'delete_income' income.id%}" method="post">
-        {% csrf_token %}
-        {{ form.as_ul }}
-        <input type="submit" value="submit">
-</form>

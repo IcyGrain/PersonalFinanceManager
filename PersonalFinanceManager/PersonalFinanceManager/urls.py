@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include,url
+from django.conf.urls import include, url
 
 urlpatterns = [
-    url(r'^app/', include('app.urls')),
+    url(r'^category/', include('category.urls')),
+    url(r'^account/', include('account.urls')),
+    url(r'^income/', include('income.urls')),
+    url(r'^budget/', include('budget.urls')),
+    url(r'^expense/', include('expense.urls')),
     path('admin/', admin.site.urls),
 ]

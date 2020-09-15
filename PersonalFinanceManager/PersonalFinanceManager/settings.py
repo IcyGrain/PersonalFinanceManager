@@ -37,7 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "app",
+    # "app",
+    "category",
+    "account",
+    "income",
+    "budget",
+    "expense"
 ]
 
 MIDDLEWARE = [
@@ -78,6 +83,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'OPTIONS': {
+
+        "init_command": "SET foreign_key_checks = 0;",
+
     }
 }
 
