@@ -3,6 +3,7 @@ from django.urls import path
 
 
 urlpatterns = [
+    path('list_budget/', list_budget, name="list_budget"),
     path('list_budget_by_category/', list_budget_by_category, name="list_budget_by_category"),
     path('list_budget_by_sub_category/', list_budget_by_sub_category, name="list_budget_by_sub_category"),
     path('create_budget/', create_budget, name="create_budget"),

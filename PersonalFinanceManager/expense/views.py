@@ -8,6 +8,26 @@ from budget.models import *
 # Create your views here.
 
 
+def unfold_expense(expenses):
+    result = list()
+    for expense in expenses:
+        temp = model_to_dict(expense)
+        temp['category'] = model_to_dict(expense.category)
+        temp['category']["category"] = model_to_dict(Category.objects.get(id=temp['category']["category"]))
+        temp['account'] = model_to_dict(expense.account)
+        result.append(temp)
+    return result
+
+
+@api_view(("get",))
+def list_expense(request):
+    expenses = Expense.objects.all()
+
+    result = unfold_expense(expenses)
+
+    return JsonResponse({"result": result, "status": "success"})
+
+
 @api_view(("get",))
 def list_expense_by_category(request):
     categorys = Category.objects.all()
@@ -119,6 +139,6 @@ def get_expense(request):
     existed_expense = Expense.objects.filter(id=request.data['id'])
 
     if existed_expense:
-        result = model_to_dict(existed_expense.first())
+        result = unfold_expense(existed_expense)
         return JsonResponse({"result": result, "status": "success"})
     return JsonResponse({"status": "failure"})

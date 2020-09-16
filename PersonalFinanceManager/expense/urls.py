@@ -3,6 +3,7 @@ from .views import *
 
 
 urlpatterns = [
+    path('list_expense/', list_expense, name="list_expense"),
     path('list_expense_by_category/', list_expense_by_category, name="list_expense_by_category"),
     path('list_expense_by_date/', list_expense_by_date, name="list_expense_by_date"),
     path('create_expense/', create_expense, name="create_expense"),

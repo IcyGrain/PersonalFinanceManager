@@ -5,6 +5,24 @@ from django.forms.models import model_to_dict
 # Create your views here.
 
 
+def unfold_income(incomes):
+    result = list()
+    for income in incomes:
+        temp = model_to_dict(income)
+        temp['account'] = model_to_dict(income.account)
+        result.append(temp)
+    return result
+
+
+@api_view(("get",))
+def list_income(request):
+    incomes = Income.objects.all()
+
+    result = unfold_income(incomes)
+
+    return JsonResponse({"result": result, "status": "success"})
+
+
 @api_view(("get",))
 def list_income_by_source(request):
     sources = Income.objects.values_list("source", flat=True).distinct()

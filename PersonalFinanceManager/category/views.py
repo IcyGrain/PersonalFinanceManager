@@ -13,9 +13,9 @@ def list_category(request):
     return JsonResponse({"result": result, "status": "success"})
 
 
-@api_view(("get",))
+@api_view(("post",))
 def list_sub_category(request):
-    category = request.GET.get('category')
+    category = request.data['id']
     sub_categorys = SubCategory.objects.filter(category=category).values()
 
     result = list(sub_categorys)

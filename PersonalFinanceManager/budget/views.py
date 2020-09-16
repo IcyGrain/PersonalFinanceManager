@@ -6,6 +6,25 @@ from django.db.models import Sum
 # Create your views here.
 
 
+def unfold_budget(budgets):
+    result = list()
+    for budget in budgets:
+        temp = model_to_dict(budget)
+        temp['category'] = model_to_dict(budget.category)
+        temp['category']["category"] = model_to_dict(Category.objects.get(id=temp['category']["category"]))
+        result.append(temp)
+    return result
+
+
+@api_view(("get",))
+def list_budget(request):
+    budgets = Budget.objects.all()
+
+    result = unfold_budget(budgets)
+
+    return JsonResponse({"result": result, "status": "success"})
+
+
 @api_view(("get",))
 def list_budget_by_category(request):
     categorys = Category.objects.all()
