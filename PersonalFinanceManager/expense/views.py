@@ -84,7 +84,7 @@ def create_expense(request):
                                   start_date=timezone.now().strftime("%Y-%m-%d"),
                                   end_date=(timezone.now() + timedelta(days=30)).strftime("%Y-%m-%d"))
 
-        request.data["account"].balance = expense_form.cleaned_data["amount"]
+        request.data["account"].balance -= expense_form.cleaned_data["amount"]
         budget.amount -= expense_form.cleaned_data["amount"]
 
         budget.save()

@@ -48,6 +48,8 @@ def create_income(request):
     income_form = IncomeForm(request.data)
 
     if income_form.is_valid():
+        request.data["account"].balance += income_form.cleaned_data["amount"]
+        request.data["account"].save()
         income_form.save()
         return JsonResponse({"status": "success"})
     return JsonResponse({"status": "failure"})
@@ -58,8 +60,10 @@ def delete_income(request):
     existed_income = Income.objects.filter(id=request.data['id'])
 
     if existed_income:
-        result = existed_income.first()
-        result.delete()
+        income = existed_income.first()
+        income.account.balance -= income.amount
+        income.account.save()
+        income.delete()
         return JsonResponse({"status": "success"})
     return JsonResponse({"status": "failure"})
 
@@ -69,8 +73,13 @@ def update_income(request):
     request.data["account"] = Account.objects.get(id=request.data['account'])
     income_form = IncomeForm(request.data)
 
+    old_amount = Income.objects.get(id=request.data["id"]).amount
     if income_form.is_valid():
+        request.data["account"].balance += income_form.cleaned_data["amount"] - old_amount
+
+        request.data["account"].save()
         Income.objects.filter(id=request.data['id']).update(**income_form.cleaned_data)
+
         return JsonResponse({"status": "success"})
     return JsonResponse({"status": "failure"})
 
