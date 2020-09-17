@@ -16,7 +16,7 @@ def list_transaction(request):
     incomes = account.income_set.all()
 
     result = {"expense": unfold_expense(expenses), "income": unfold_income(incomes)}
-    
+
     return JsonResponse({"result": result, "status": "success"})
 
 
@@ -60,6 +60,15 @@ def update_account(request):
         return JsonResponse({"status": "success"})
     return JsonResponse({"status": "failure"})
 
+
+@api_view(("post",))
+def get_account(request):
+    existed_category = Account.objects.filter(id=request.data['id'])
+
+    if existed_category:
+        result = model_to_dict(existed_category.first())
+        return JsonResponse({"result": result, "status": "success"})
+    return JsonResponse({"status": "failure"})
 
 @api_view(("post","get"))
 def import_csv(request):

@@ -9,4 +9,5 @@ urlpatterns = [
     path('create_income/', create_income, name="create_income"),
     path('delete_income/', delete_income, name="delete_income"),
     path('update_income/', update_income, name="update_income"),
+    path('get_income/', get_income, name="get_income"),
 ]

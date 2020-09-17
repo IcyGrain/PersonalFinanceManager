@@ -1,6 +1,6 @@
 from .forms import *
 from rest_framework.decorators import api_view
-from django.http import JsonResponse
+from django.http import JsonResponse, QueryDict
 from django.forms.models import model_to_dict
 
 
@@ -35,6 +35,8 @@ def create_category(request):
 
 @api_view(("post",))
 def create_sub_category(request):
+    if isinstance(request.data, QueryDict):
+        request.data = request.data.dict()
     request.data["category"] = Category.objects.get(id=request.data['category'])
 
     sub_category_form = SubCategoryForm(request.data)

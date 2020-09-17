@@ -45,7 +45,7 @@ def list_income_by_date(request):
 def create_income(request):
     request.data["account"] = Account.objects.get(id=request.data['account'])
 
-    income_form = Income(request.data)
+    income_form = IncomeForm(request.data)
 
     if income_form.is_valid():
         income_form.save()

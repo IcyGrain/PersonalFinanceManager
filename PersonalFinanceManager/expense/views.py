@@ -1,9 +1,12 @@
+from datetime import timedelta
+
 from .forms import *
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.db.models import Sum
 from budget.models import *
+
 
 # Create your views here.
 
@@ -48,6 +51,8 @@ def list_expense_by_date(request):
     result = {str(date): list(Expense.objects.filter(date=date).select_related("account").values()) for date in dates}
 
     return JsonResponse({"result": result, "status": "success"})
+
+
 # @api_view(("get",))
 # def list_expense_by_date(request):
 #     dates = Expense.objects.values_list("date", flat=True).distinct()
@@ -74,22 +79,24 @@ def create_expense(request):
                                                end_date__gte=request.data["date"])
         if existed_budget:
             budget = existed_budget.first()
+        else:
+            budget = Budget.objects.create(amount=0, category=request.data['category'], budget_type="fixed",
+                                  start_date=timezone.now().strftime("%Y-%m-%d"),
+                                  end_date=(timezone.now() + timedelta(days=30)).strftime("%Y-%m-%d"))
 
-            request.data["account"].balance = expense_form.cleaned_data["amount"]
-            budget.amount -= expense_form.cleaned_data["amount"]
+        request.data["account"].balance = expense_form.cleaned_data["amount"]
+        budget.amount -= expense_form.cleaned_data["amount"]
 
-            budget.save()
-            request.data["account"].save()
-            expense_form.save()
-            return JsonResponse({"status": "success"})
+        budget.save()
+        request.data["account"].save()
+        expense_form.save()
+        return JsonResponse({"status": "success"})
 
     return JsonResponse({"status": "failure"})
 
 
 @api_view(("post",))
 def delete_expense(request):
-    request.data["category"] = SubCategory.objects.get(id=request.data['category'])
-    request.data["account"] = Account.objects.get(id=request.data['account'])
     existed_expense = Expense.objects.filter(id=request.data['id'])
 
     if existed_expense:
@@ -122,14 +129,11 @@ def update_expense(request):
         if existed_budget:
             budget = existed_budget.first()
             budget.amount -= expense_form.cleaned_data['amount'] - old_amount
-            print(budget.amount)
             budget.save()
 
         request.data["account"].balance -= expense_form.cleaned_data["amount"] - old_amount
-        print(request.data["account"])
         request.data["account"].save()
         Expense.objects.filter(id=request.data['id']).update(**expense_form.cleaned_data)
-        print(old_amount)
         return JsonResponse({"status": "success"})
     return JsonResponse({"status": "failure"})
 
