@@ -17,8 +17,8 @@ class ExpenseTest(TestCase):
         Category.objects.create(category="yi")
         SubCategory.objects.create(category=Category.objects.get(id=1), sub_category="zi")
         SubCategory.objects.create(category=Category.objects.get(id=2), sub_category="chou")
-        Account.objects.create(name="test1", account_type="saving", currency="CHY", balance=1000)
-        Account.objects.create(name="test2", account_type="checking", currency="CHY", balance=1000)
+        Account.objects.create(name="test1", account_type="saving", currency="CNY", balance=1000)
+        Account.objects.create(name="test2", account_type="checking", currency="CNY", balance=1000)
         # Budget.objects.create(amount="1000", category=SubCategory.objects.get(id=1), budget_type="fixed",
         #                       start_date=timezone.now().strftime("%Y-%m-%d"),
         #                       end_date=(timezone.now() + timedelta(days=30)).strftime("%Y-%m-%d"))
@@ -37,13 +37,13 @@ class ExpenseTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)['result']
-        expect = [{'id': 1, 'amount': '1000.00', 'date': '2020-09-17',
+        expect = [{'id': 1, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"),
                    'category': {'id': 1, 'category': {'id': 1, 'category': 'jia'}, 'sub_category': 'zi'},
-                   'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CHY',
+                   'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CNY',
                                'balance': '1000.00'}, 'payee': 'debt', 'note': 'For test'},
-                  {'id': 2, 'amount': '1000.00', 'date': '2020-09-17',
+                  {'id': 2, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"),
                    'category': {'id': 2, 'category': {'id': 2, 'category': 'yi'}, 'sub_category': 'chou'},
-                   'account': {'id': 2, 'name': 'test2', 'account_type': 'checking', 'currency': 'CHY',
+                   'account': {'id': 2, 'name': 'test2', 'account_type': 'checking', 'currency': 'CNY',
                                'balance': '1000.00'}, 'payee': 'debt', 'note': 'For test'}]
         self.assertEqual(result, expect)
 
@@ -92,9 +92,9 @@ class ExpenseTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)['result']
-        expect = [{'id': 1, 'amount': '1000.00', 'date': '2020-09-17',
+        expect = [{'id': 1, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"),
                    'category': {'id': 1, 'category': {'id': 1, 'category': 'jia'}, 'sub_category': 'zi'},
-                   'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CHY',
+                   'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CNY',
                                'balance': '1000.00'},
                    'payee': 'debt', 'note': 'For test'}]
         self.assertEqual(result, expect)

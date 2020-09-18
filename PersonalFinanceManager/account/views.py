@@ -12,8 +12,8 @@ from income.views import unfold_income
 def list_transaction(request):
     account = Account.objects.get(id=request.data['id'])
 
-    expenses = account.expense_set.all()
-    incomes = account.income_set.all()
+    expenses = account.expense_set.order_by("date").all()
+    incomes = account.income_set.order_by("date").all()
 
     result = {"expense": unfold_expense(expenses), "income": unfold_income(incomes)}
 

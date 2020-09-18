@@ -12,8 +12,8 @@ import json
 class AccountTest(TestCase):
 
     def setUp(self):
-        Account.objects.create(name="test1", account_type="saving", currency="CHY", balance=1000)
-        Account.objects.create(name="test2", account_type="checking", currency="CHY", balance=1000)
+        Account.objects.create(name="test1", account_type="saving", currency="CNY", balance=1000)
+        Account.objects.create(name="test2", account_type="checking", currency="CNY", balance=1000)
         Category.objects.create(category="jia")
         SubCategory.objects.create(category=Category.objects.get(id=1), sub_category="zi")
         Expense.objects.create(amount="1000", category=SubCategory.objects.get(id=1), account=Account.objects.get(id=1),
@@ -27,14 +27,13 @@ class AccountTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)['result']
-        expect = {'expense': [{'id': 1, 'amount': '1000.00', 'date': '2020-09-17',
+        expect = {'expense': [{'id': 1, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"),
                                'category': {'id': 1, 'category': {'id': 1, 'category': 'jia'}, 'sub_category': 'zi'},
-                               'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CHY',
+                               'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CNY',
                                            'balance': '1000.00'}, 'payee': 'debt', 'note': 'For test'}], 'income': [
-            {'id': 1, 'amount': '1000.00', 'date': '2020-09-17',
-             'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CHY', 'balance': '1000.00'},
+            {'id': 1, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"),
+             'account': {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CNY', 'balance': '1000.00'},
              'source': 'payment', 'note': 'For test'}]}
-
         self.assertEqual(result, expect)
 
     def test_list_account(self):
@@ -44,14 +43,14 @@ class AccountTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)['result']
-        expect = [{'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CHY', 'balance': '1000.00'},
-                  {'id': 2, 'name': 'test2', 'account_type': 'checking', 'currency': 'CHY', 'balance': '1000.00'}]
+        expect = [{'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CNY', 'balance': '1000.00'},
+                  {'id': 2, 'name': 'test2', 'account_type': 'checking', 'currency': 'CNY', 'balance': '1000.00'}]
         self.assertEqual(result, expect)
 
     def test_create_account(self):
         client = Client(HTTP_USER_AGENT='Mozilla/5.0')
         response = client.post("/account/create_account/",
-                               {'name': 'test3', 'account_type': 'saving', 'currency': 'CHY', 'balance': '1000.00'})
+                               {'name': 'test3', 'account_type': 'saving', 'currency': 'CNY', 'balance': '1000.00'})
 
         self.assertEqual(response.status_code, 200)
 
@@ -70,7 +69,7 @@ class AccountTest(TestCase):
     def test_update_account(self):
         client = Client(HTTP_USER_AGENT='Mozilla/5.0')
         response = client.post("/account/update_account/",
-                               {"id": 1, 'name': 'test3', 'account_type': 'saving', 'currency': 'CHY',
+                               {"id": 1, 'name': 'test3', 'account_type': 'saving', 'currency': 'CNY',
                                 'balance': '1000.00'})
 
         self.assertEqual(response.status_code, 200)
@@ -87,5 +86,5 @@ class AccountTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)['result']
-        expect = {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CHY', 'balance': '1000.00'}
+        expect = {'id': 1, 'name': 'test1', 'account_type': 'saving', 'currency': 'CNY', 'balance': '1000.00'}
         self.assertEqual(result, expect)

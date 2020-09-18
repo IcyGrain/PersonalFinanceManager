@@ -4,11 +4,8 @@ from .forms import *
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
-from django.db.models import Sum
 from budget.models import *
 
-
-# Create your views here.
 
 
 def unfold_expense(expenses):

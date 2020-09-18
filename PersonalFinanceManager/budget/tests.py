@@ -29,12 +29,13 @@ class BudgetTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)['result']
-        expect = [{'id': 1, 'amount': '1000.00', 'date': '2020-09-17',
+        expect = [{'id': 1, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"),
                    'category': {'id': 1, 'category': {'id': 1, 'category': 'jia'}, 'sub_category': 'zi'},
-                   'budget_type': 'fixed', 'start_date': '2020-09-17', 'end_date': '2020-10-17'},
-                  {'id': 2, 'amount': '1000.00', 'date': '2020-09-17',
+                   'budget_type': 'fixed', 'start_date': timezone.now().strftime("%Y-%m-%d"), 'end_date': (timezone.now() + timedelta(days=30)).strftime("%Y-%m-%d")},
+                  {'id': 2, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"),
                    'category': {'id': 2, 'category': {'id': 2, 'category': 'yi'}, 'sub_category': 'chou'},
-                   'budget_type': 'fixed', 'start_date': '2020-09-17', 'end_date': '2020-10-17'}]
+                   'budget_type': 'fixed', 'start_date': timezone.now().strftime("%Y-%m-%d"), 'end_date': (timezone.now() + timedelta(days=30)).strftime("%Y-%m-%d")}]
+
         self.assertEqual(result, expect)
 
     def test_create_budget(self):
@@ -82,6 +83,6 @@ class BudgetTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)['result']
-        expect = {'id': 1, 'amount': '1000.00', 'date': '2020-09-17', 'category': 1, 'budget_type': 'fixed',
-                  'start_date': '2020-09-17', 'end_date': '2020-10-17'}
+        expect = {'id': 1, 'amount': '1000.00', 'date': timezone.now().strftime("%Y-%m-%d"), 'category': 1, 'budget_type': 'fixed',
+                  'start_date': timezone.now().strftime("%Y-%m-%d"), 'end_date': (timezone.now() + timedelta(days=30)).strftime("%Y-%m-%d")}
         self.assertEqual(result, expect)
